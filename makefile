@@ -1,12 +1,11 @@
-
+# Compiler settings - Can be customized.
 CXX = clang++
 CXXFLAGS = -std=c++17 -Wall -Wextra -g
 
 # Project settings
 PROG = main
-SOURCES = $(wildcard *.cpp)
-OBJECTS = $(SOURCES:.cpp=.o)
-OUTPUT = image.ppm
+MAIN_SOURCE = main.cpp
+OBJECTS = $(MAIN_SOURCE:.cpp=.o)
 
 all: $(PROG)
 
@@ -18,9 +17,9 @@ $(PROG): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 run: $(PROG)
-	./$(PROG) > $(OUTPUT)
+	./$(PROG) > image.ppm
 
 clean:
-	rm -f $(OBJECTS) $(PROG) $(OUTPUT)
+	rm -f $(OBJECTS) $(PROG) image.ppm
 
 .PHONY: all run clean
