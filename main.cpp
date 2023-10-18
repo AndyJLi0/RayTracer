@@ -3,12 +3,25 @@
 #include "ray.h"
 
 #include <iostream>
+bool hit_sphere(const point3 &center, double radius, const ray &r)
+{
+    vec3 oc = r.origin() - center;
 
+    auto a = dot(r.direction(), r.direction());
+    auto b = 2.0 * dot(oc, r.direction());
+    auto c = dot(oc, oc) - radius * radius;
+    auto discriminant = b * b - 4 * a * c;
+    return (discriminant >= 0);
+}
 color ray_color(const ray &r)
 {
-    vec3 unit_direction = unit_vector(r.dirirection());
+    if (hit_sphere(point3(0, 0, -1), 0.5, r))
+    {
+        return color(0, 0, 1);
+    }
+    vec3 unit_direction = unit_vector(r.direction());
     auto a = 0.5 * (unit_direction.y() + 1.0);
-    return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(1.0, 0.5, 0.05);
+    return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
 }
 
 int main()
@@ -29,7 +42,6 @@ int main()
 
     auto pixel_delta_u = viewport_u / image_width;
     auto pixel_delta_v = viewport_v / image_height;
-
 
     auto viewport_upper_left = camera_center - vec3(0, 0, focal_length) - viewport_u / 2 - viewport_v / 2;
     auto pixel1_0_0_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
