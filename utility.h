@@ -4,7 +4,7 @@
 #include <cmath>
 #include <limits>
 #include <memory>
-
+#include "interval.h"
 // Usings
 
 using std::make_shared;
