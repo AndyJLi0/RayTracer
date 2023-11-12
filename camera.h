@@ -35,14 +35,14 @@ public:
 
 private:
   int image_height;   // Image height
-  point3 center;      // Camera genter
+  point3 center;      // Camera center
   point3 pixel00_loc; // Location of pixel 0,0
   vec3 pixel_delta_u; // Offset to pixel to the right
   vec3 pixel_delta_v; // Offset to pixel below
 
   void initialize() {
     // IMAGE
-    int image_height = static_cast<int>(image_width / aspect_ratio);
+    image_height = static_cast<int>(image_width / aspect_ratio);
     image_height = (image_height < 1) ? 1 : image_height;
 
     // CAMERA

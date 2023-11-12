@@ -20,6 +20,6 @@ run: $(PROG)
 	./$(PROG) > image.ppm
 
 clean:
-	rm -f $(OBJECTS) $(PROG) image.ppm
+	rm -f $(OBJECTS) $(PROG) *.ppm
 
 .PHONY: all run clean
