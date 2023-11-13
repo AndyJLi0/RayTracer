@@ -36,3 +36,24 @@ inline vec3 cross(const vec3 &u, const vec3 &v) {
 }
 
 inline vec3 unit_vector(vec3 v) { return v / v.length(); }
+
+inline vec3 random_in_unit_sphere() {
+  while (true) {
+    auto p = vec3::random(-1, 1);
+    if (p.length_squared() < 1)
+      return p;
+  }
+}
+
+inline vec3 random_unit_vector() {
+  return unit_vector(random_in_unit_sphere());
+}
+
+inline vec3 random_on_hemisphere(const vec3 &normal) {
+  vec3 on_unit_sphere = random_unit_vector();
+  if (dot(on_unit_sphere, normal) > 0.0) {
+    return on_unit_sphere;
+  } else {
+    return -on_unit_sphere;
+  }
+}

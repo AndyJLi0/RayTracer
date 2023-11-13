@@ -1,16 +1,17 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include "utility.h"
 #include "color.h"
 #include "hittable.h"
-#include "utility.h"
 #include <iostream>
 
 class camera {
 public:
-  double aspect_ratio = 1.0; // Aspect ratio
-  int image_width = 100;     // Image width
-
+  double aspect_ratio = 1.0;  // Aspect ratio
+  int image_width = 100;      // Image width
+  int samples_per_pixel = 10; // Samples per pixel
+  int max_depth = 10;         // Maximum recursion depth (for ray bouncing)
   void render(const hittable &world) {
     initialize();
 
@@ -20,13 +21,12 @@ public:
       std::clog << "\rScanlines remaining: " << (image_height - j) << ' '
                 << std::flush;
       for (int i = 0; i < image_width; ++i) {
-        auto pixel_center =
-            pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
-        auto ray_direction = pixel_center - center;
-        ray r(center, ray_direction);
-
-        color pixel_color = ray_color(r, world);
-        write_color(std::cout, pixel_color);
+        color pixel_color(0, 0, 0);
+        for (int sample = 0; sample < samples_per_pixel; ++sample) {
+          ray r = get_ray(i, j);
+          pixel_color += ray_color(r, max_depth, world);
+        }
+        write_color(std::cout, pixel_color, samples_per_pixel);
       }
     }
 
@@ -66,12 +66,28 @@ private:
     pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
   }
 
-  color ray_color(const ray &r, const hittable &world) {
-    hit_record rec;
+  ray get_ray(int i, int j) const {
+    auto pixel_center = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
+    auto pixel_sample = pixel_center + pixel_sample_square();
+    auto ray_origin = center;
+    auto ray_direction = pixel_sample - ray_origin;
+    return ray(ray_origin, ray_direction);
+  }
 
-    if (world.hit(r, interval(0, std::numeric_limits<double>::infinity()),
-                  rec)) {
-      return 0.5 * (rec.normal + color(1, 1, 1));
+  vec3 pixel_sample_square() const {
+    auto px = -0.5 + random_double();
+    auto py = -0.5 + random_double();
+    return px * pixel_delta_u + py * pixel_delta_v;
+  }
+
+  color ray_color(const ray &r, int depth, const hittable &world) {
+    hit_record rec;
+    if (depth <= 0) {
+      return color(0, 0, 0); // black
+    }
+    if (world.hit(r, interval(0.001, infinity), rec)) {
+      vec3 direction = rec.normal  + random_unit_vector();
+      return 0.5 * ray_color(ray(rec.p, direction), depth - 1, world);
     }
 
     vec3 unit_direction = unit_vector(r.direction());
