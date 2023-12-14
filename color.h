@@ -9,7 +9,7 @@ using color = vec3;
 
 // changes the color from linear to gamma
 inline double linear_to_gamma(double x) {
-  return std::pow(x, 1 / 2.2);
+  return std::pow(x, 1 / 2);
 }
 
 void write_color(std::ostream &out, color pixel_color, int samples_per_pixel) {

@@ -2,8 +2,6 @@
 #define INTERVAL_H
 
 
-#include <limits>
-
 class interval {
 public:
   double min, max;

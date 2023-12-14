@@ -1,11 +1,11 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
-#include "interval.h"
 #include <cmath>
 #include <cstdlib>
 #include <limits>
 #include <memory>
+
 
 using std::make_shared;
 using std::shared_ptr;
@@ -32,9 +32,9 @@ inline double random_double(double min, double max) {
 }
 
 // Common Headers
-
-#include "color.h"
-#include "hittable.h"
+#include "interval.h"
 #include "ray.h"
 #include "vec3.h"
+
+
 #endif
